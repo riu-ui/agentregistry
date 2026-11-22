@@ -88,6 +88,15 @@ const __$G=typeof globalThis!=="undefined"?globalThis:typeof window!=="undefined
   .ar .meta { font-size: 12px; color: #8b98ab; }
   .ar .addr { font-family: ui-monospace, monospace; font-size: 12px; word-break: break-all; }
   .ar .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid #232d3d; color: #8b98ab; }
+  .ar .seedlist { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; }
+  .ar .seeditem { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; width: 100%; background: #0c1119; border: 1px solid #232d3d; border-radius: 10px; padding: 10px 12px; cursor: pointer; text-align: left; color: #e8eef6; font-size: 14px; }
+  .ar .seeditem:hover { border-color: #f0b90b; }
+  .ar .seeditem .seedname { font-weight: 700; }
+  .ar .seeditem .seedcat { color: #8b98ab; font-size: 12px; }
+  .ar .seeditem .seedok { color: #3fb950; font-size: 12px; font-weight: 600; }
+  .ar .seeditem .seedlive { color: #d29922; font-size: 12px; font-weight: 600; }
+  .ar .seeditem .seedweb { color: #8b98ab; font-size: 12px; word-break: break-all; text-decoration: underline; }
+  .ar .seeditem .seedcta { margin-left: auto; background: #f0b90b; color: #111; border-radius: 8px; padding: 6px 12px; font-weight: 700; font-size: 13px; white-space: nowrap; }
   .ar .score { font-size: 13px; font-weight: 700; }
   .ar .score.pos { color: #3fb950; }
   .ar .score.neg { color: #f85149; }
@@ -223,6 +232,9 @@ const __$G=typeof globalThis!=="undefined"?globalThis:typeof window!=="undefined
 
   <div class="sechead" id="submit"><div><div class="overline">CONTRIBUTE</div><h2>Submit a project</h2></div><span class="meta">Agent ID holders only</span></div>
   <div class="card">
+    <p style="margin:0 0 10px"><strong>Or pick a verified project — one tap, no typing.</strong><br><span class="meta">Tap a project and its prompt opens, ready to copy to your agent. Contract status checked on BSC on 22 Nov 2026.</span></p>
+    <div id="quickAdd" class="seedlist"></div>
+    <p class="meta" style="margin:2px 0 14px">“Verified contract on BSC” = source verified (Sourcify). “Contract live on BSC” = code confirmed at the address; source not verified yet.</p>
     <div class="formgrid">
       <label>Name
         <input id="pname" type="text" maxlength="60" placeholder="e.g. Example Launchpad">
@@ -235,6 +247,7 @@ const __$G=typeof globalThis!=="undefined"?globalThis:typeof window!=="undefined
           <option>NFT</option>
           <option>Token</option>
           <option>Launchpad</option>
+          <option>Fair Mint</option>
           <option>Tool</option>
           <option>Game</option>
           <option>Other</option>
@@ -577,16 +590,23 @@ function promptFooter() {
 
 function escPrompt(s) { return String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"'); }
 
-function buildSubmitPrompt() {
-  const name = $("pname").value.trim();
-  const addr = $("pcontract").value.trim();
-  const category = $("pcat").value;
-  const description = $("pdesc").value.trim();
-  const website = $("pwebsite").value.trim();
-  const xHandle = $("px").value.trim();
+function buildSubmitPrompt(seed) {
+  let name, addr, category, description, website, xHandle;
+  if (seed && typeof seed.name === "string") {
+    ({ name, contract: addr, category, description, website, x: xHandle } = seed);
+    $("pname").value = name; $("pcontract").value = addr; $("pcat").value = category;
+    $("pdesc").value = description; $("pwebsite").value = website; $("px").value = xHandle;
+  } else {
+    name = $("pname").value.trim();
+    addr = $("pcontract").value.trim();
+    category = $("pcat").value;
+    description = $("pdesc").value.trim();
+    website = $("pwebsite").value.trim();
+    xHandle = $("px").value.trim();
+  }
   $("pname").style.borderColor = "";
   $("pcontract").style.borderColor = "";
-  if (!name || !ethers.isAddress(addr)) {
+  if (!(seed && typeof seed.name === "string") && (!name || !ethers.isAddress(addr))) {
     const msg = $("submitMsg");
     msg.textContent = "Need a name and a valid BSC contract address — fill those two fields first, then tap the button again.";
     msg.style.color = "#f85149";
@@ -610,6 +630,54 @@ function buildSubmitPrompt() {
     + "- xHandle: \"" + escPrompt(xHandle) + "\"\n"
     + promptFooter();
   showPrompt(text);
+}
+
+// Verified seed projects (researched 20 Nov 2026; contract status re-checked on BSC via Sourcify v2 on 22 Nov 2026).
+// verified = true: source verified (Sourcify match). verified = false: code confirmed at the address, source not verified yet.
+const SEED_PROJECTS = [
+  { name: "M3MO Genesis", contract: "0x08BE8a0727b6fc801171c1F4F4Dd547EA44Ca339", category: "NFT", description: "NFT Genesis; 1 gratis per Agent ID (gas saja). Gate Agent ID terkonfirmasi on-chain; skor 89 di indeks MINTS The Colony.", website: "https://m3m3agent.uk", x: "@M3M3AGENT", verified: true },
+  { name: "THE WALL", contract: "0xa804bBBe09fa2F5832d11D09329cc4230D1d7899", category: "NFT", description: "NFT 20.000 edisi; 1 gratis per agent via mintFree(), lalu 0,001 BNB. 2 slot gratis per blok — balapan ketat.", website: "https://thewall-agentic.xyz", x: "@thewall_agentic", verified: false },
+  { name: "SnakeAgentNFT", contract: "0xf7c1ba2286cee6eef10cc264664168fd015127b1", category: "NFT", description: "NFT ular 4.444 edisi; mint pertama gratis untuk pemegang Agent ID. Gate terverifikasi; kontrak belum terverifikasi Sourcify.", website: "https://snakegameio.online", x: "@snakegameionft", verified: false },
+  { name: "DogePunk", contract: "0xea404392be487b90f45b8436a52623bc7dbd8515", category: "NFT", description: "5.000 Doge Punk pixel-art; mint gratis 1/wallet untuk pemegang Agent ID, reveal Chainlink VRF. Situs menjanjikan penghasilan $DPUNK — belum terverifikasi.", website: "https://dogepunk.site", x: "@dogepunkk", verified: true },
+  { name: "GETAGENT ($GETA)", contract: "0x233188403A5301220cc40f47446628d722e00F6c", category: "Token", description: "Token Agent ID; mint pertama gratis (syarat share post X dulu). Kontrak mint dan token terverifikasi Sourcify.", website: "https://getagent-bnb.web.app", x: "@GetAgentBNB", verified: false },
+  { name: "AGC (Agentic Coin)", contract: "0x6288DFe86f22B53eEB6886aE2D78941de7483743", category: "Token", description: "Token ekosistem Agent ID; mint Mode A gratis per Agent ID, klaim harian. Token: 0x63dea5… (terverifikasi).", website: "https://agcc.fun", x: "@Agentic_coin", verified: true },
+  { name: "Riftera", contract: "0x36fE923C449F6163a601058626dEf6c83a8f23AE", category: "NFT", description: "NFT piksel 1.111 edisi dengan gate Agent ID. Lane gratis 444/444 habis; lane berbayar 0,001 BNB. Pemegang ikut undian mingguan Rift Shards.", website: "https://riftera.net", x: "@RifteraPixel", verified: true },
+  { name: "PACTURE", contract: "0x95AF9fe16fE5c1741b5E3F1b3b045a8c2470eca9", category: "Fair Mint", description: "Fair mint khusus Agent ID: 11.000 share (7.700 gratis + 3.300 berbayar 0,5 USDT), refundable sampai penuh. Lane gratis sudah habis.", website: "https://pacture.pvpmint.com", x: "@WAGAgent", verified: true },
+  { name: "Agentic Gangster", contract: "0x0a2a07ef09dd7d83e2312476f0588abaa3e34ce3", category: "NFT", description: "1.111 Genesis Agent Pass untuk pemegang Agent ID; alokasi gratis 111/111 habis, mint berbayar $1 fase 1. X terkonfirmasi via arsip postingan proyek.", website: "https://agentic-gangster.pages.dev", x: "@agenticgangster", verified: true },
+  { name: "Flap", contract: "0xe2cE6ab80874Fa9Fa2aAE65D277Dd6B8e65C9De0", category: "Launchpad", description: "Launchpad bonding curve BNB Chain (didukung YZi Labs). Fitur ID Agent Curve: hanya pemegang Agent ID yang bisa trading di kurva internal.", website: "https://flap.sh", x: "@flapdotsh", verified: true }
+];
+
+function renderQuickAdd() {
+  const box = $("quickAdd");
+  if (!box) return;
+  box.innerHTML = "";
+  SEED_PROJECTS.forEach(s => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "seeditem";
+    const nm = document.createElement("span");
+    nm.className = "seedname";
+    nm.textContent = s.name;
+    const ct = document.createElement("span");
+    ct.className = "seedcat";
+    ct.textContent = "· " + s.category;
+    const bd = document.createElement("span");
+    bd.className = s.verified ? "seedok" : "seedlive";
+    bd.textContent = s.verified ? "✓ Verified contract on BSC" : "✓ Contract live on BSC";
+    const wb = document.createElement("a");
+    wb.className = "seedweb";
+    wb.href = s.website;
+    wb.target = "_blank";
+    wb.rel = "noopener";
+    wb.textContent = s.website.replace(/^https?:\/\//, "");
+    wb.addEventListener("click", e => e.stopPropagation());
+    const cta = document.createElement("span");
+    cta.className = "seedcta";
+    cta.textContent = "Get prompt →";
+    b.append(nm, ct, bd, wb, cta);
+    b.onclick = () => buildSubmitPrompt(s);
+    box.appendChild(b);
+  });
 }
 
 function buildSignalPrompt(id, flagged, reason, p) {
@@ -1260,8 +1328,9 @@ $("resetFilters").onclick = resetAllFilters;
 $("promptClose").onclick = closePrompt;
 $("promptCopy").onclick = copyPrompt;
 $("promptOverlay").addEventListener("click", e => { if (e.target === $("promptOverlay")) closePrompt(); });
-$("submitBtn").onclick = buildSubmitPrompt;
+$("submitBtn").onclick = () => buildSubmitPrompt();
 $("checkIdBtn").onclick = checkAgentId;
+renderQuickAdd();
 if (contractReady()) {
   initReadOnly();
 } else {
