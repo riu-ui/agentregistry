@@ -122,6 +122,14 @@ Deployed 19 November 2026 on BNB Smart Chain:
 
 Verification: Sourcify exact match on creation and runtime, and verified on BscScan. Deployed compiler v0.8.34+commit.80d5c536, optimizer off, EVM version osaka, single file. You can read the source in `contracts/` and compare it yourself.
 
+## Project logos
+
+Each project card shows the project's own logo when I have one bundled, and falls back to a coloured letter tile when I don't. The logos live in `logos/` (256x256 PNG) and are mapped by contract address in `PROJECT_LOGOS` near the top of the main script in `index.html`. To add a logo for a new listing: save the project's real logo (its site header, favicon, or hero art — never a guess) as `logos/<slug>.png`, add one line to `PROJECT_LOGOS`, and run the logo test.
+
+I deliberately did not add a favicon fallback (fetching `<website>/favicon.ico` or a favicon service at render time). Both live listings prove why: M3MO's favicon only exists as an inline data URI (`/favicon.ico` is a 404) and DogePunk's site has no favicon at all (`/favicon.ico` returns the app HTML). A runtime favicon lookup would add a slow third-party request to every card and still end at the letter tile most of the time.
+
+Current logos: M3MO Genesis (green robot mascot, from the m3m3agent.uk favicon) and DogePunk (pixel punk Doge hero art, from dogepunk.site).
+
 ## Tests
 
 Foundry suite, 26/26 passing. It covers the holder gate, submitting (happy path and events), duplicate and zero-address reverts, non-holder reverts, every field limit, the constructor, upvotes and flags, double-signal reverts, reason mismatch, bad reason, and signalling a project that does not exist.
@@ -137,6 +145,7 @@ forge test
 contracts/AgentRegistry.sol   the registry contract (self-contained, no imports)
 test/AgentRegistry.t.sol      Foundry tests (26/26 passing)
 index.html                    the whole site: one static file, ethers inlined, no backend
+logos/                        bundled project logos (256x256 PNG, mapped in PROJECT_LOGOS)
 og-image.png                  social preview image (1200x630)
 SUBMISSION.md                 hackathon submission pack, ready to paste
 build_preview.py              builds a widget preview of the site (dev tool)

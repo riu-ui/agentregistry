@@ -474,12 +474,31 @@ function xUrl(h) {
   return null;
 }
 
-function avatarHtml(address, name, size) {
+function avatarTileHtml(address, name, size) {
   const hue = parseInt(String(address).slice(2, 6), 16) % 360;
   const clean = String(name || "").replace(/[^A-Za-z0-9]/g, "");
   const initials = (clean.slice(0, 2) || "AG").toUpperCase();
   const hue2 = (hue + 40) % 360;
   return `<div class="avatar" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.36)}px;background:linear-gradient(135deg,hsl(${hue},70%,45%),hsl(${hue2},70%,32%))">${escapeHtml(initials)}</div>`;
+}
+
+// Bundled project logos, keyed by lowercase contract address. Add one line
+// per listing (drop the file in logos/ and map it here); anything not listed
+// falls back to the letter tile. Logos are the projects' own art, taken from
+// their official websites (see README "Project logos").
+const PROJECT_LOGOS = {
+  "0x08be8a0727b6fc801171c1f4f4dd547ea44ca339": "logos/m3mo-genesis.png", // M3MO Genesis — mascot from the m3m3agent.uk favicon
+  "0xea404392be487b90f45b8436a52623bc7dbd8515": "logos/dogepunk.png" // DogePunk — hero art from dogepunk.site
+};
+
+function avatarLogoFallback(img) {
+  img.outerHTML = avatarTileHtml(img.dataset.addr || "", img.dataset.name || "", Number(img.dataset.size) || 44);
+}
+
+function avatarHtml(address, name, size) {
+  const logo = PROJECT_LOGOS[String(address || "").toLowerCase()];
+  if (logo) return `<img class="avatar" src="${escapeHtml(logo)}" alt="" width="${size}" height="${size}" style="object-fit:cover" data-addr="${escapeHtml(String(address))}" data-name="${escapeHtml(name)}" data-size="${size}" onerror="avatarLogoFallback(this)">`;
+  return avatarTileHtml(address, name, size);
 }
 
 async function initReadOnly() {
