@@ -234,7 +234,7 @@ const __$G=typeof globalThis!=="undefined"?globalThis:typeof window!=="undefined
 
   <div class="sechead" id="submit"><div><div class="overline">CONTRIBUTE</div><h2>Submit a project</h2></div><span class="meta">Agent ID holders only</span></div>
   <div class="card">
-    <p style="margin:0 0 10px"><strong>Or pick a verified project to list — one tap, no typing.</strong><br><span class="meta">These 28 are verified candidates, not listed yet. Tap one and its prompt opens, ready to copy to your agent — submitting it lists it in the directory. Contract status checked on BSC on 22 Nov 2026.</span></p>
+    <p style="margin:0 0 10px"><strong>Or pick a verified project to list — one tap, no typing.</strong><br><span class="meta">These 27 are verified candidates, not listed yet. Tap one and its prompt opens, ready to copy to your agent — submitting it lists it in the directory. Contract status checked on BSC on 22 Nov 2026.</span></p>
     <div id="quickAdd" class="seedlist"></div>
     <p class="meta" style="margin:2px 0 14px">“Verified contract on BSC” = source verified (Sourcify). “Contract live on BSC” = code confirmed at the address; source not verified yet.</p>
     <div class="formgrid">
@@ -503,13 +503,20 @@ function avatarHtml(address, name, size) {
   return avatarTileHtml(address, name, size);
 }
 
-// Nina audit findings, 22 Nov 2026 (full audit: audit-registry-2026-11-22.md).
+// Nina audit findings, 22 Nov 2026 (full audit of the 2 listings:
+// audit-registry-2026-11-22.md; the other 17 scores from the Mint chat
+// audit round of the same day).
 // Keyed by lowercase contract address. A new score drops in as one entry,
 // no code change. Scores are a snapshot from the audit date, not live data.
 // A project with no entry shows "not audited yet", never a zero.
+// Verdict bands: under 50 AVOID, 50-64 CAUTION, 65 and up PASS (65 is the
+// auto-mint band). Lane, price, supply and hunter are only present when a
+// verified source states them — never guessed. Score-only entries show just
+// the score and verdict.
 // mint: { fn, args, value } is only present when the audit proves the free
 // mint function with certainty. Mint entries are free mints only (value 0);
 // a paid mint never gets a Mint button, and a mint function is never guessed.
+// The Mint button also needs score >= 50; under 50 is AVOID and never gets one.
 const AUDITS = {
   "0x08be8a0727b6fc801171c1f4f4dd547ea44ca339": {
     score: 60, hunter: 36, verdict: "CAUTION",
@@ -523,7 +530,29 @@ const AUDITS = {
     lane: "soldout", price: "Free, gas only", supply: "5,000 / 5,000 minted",
     date: "22 Nov 2026",
     note: "Sold out, mint closed. VRF reveal and $DPUNK mining are live, but the $DPUNK value is unverified and no floor has been observed."
-  }
+  },
+  "0xa804bbbe09fa2f5832d11d09329cc4230d1d7899": { score: 48, verdict: "AVOID", date: "22 Nov 2026" }, // THE WALL
+  "0xf7c1ba2286cee6eef10cc264664168fd015127b1": { score: 44, verdict: "AVOID", date: "22 Nov 2026" }, // SnakeAgentNFT
+  "0x233188403a5301220cc40f47446628d722e00f6c": {
+    score: 32, verdict: "AVOID",
+    lane: "open", price: "Free, gas only", supply: "324 / 5,555 minted",
+    date: "22 Nov 2026",
+    note: "The listed address is the minter, not the token (real token 0xc83B8b406F43BB89aDd0941bAA3Cba153B5221E1). The Sourcify-verified claim is wrong, and the GETA/WBNB pair holds only dust. Free mint sim passed, 100 free quota left."
+  }, // GETAGENT ($GETA)
+  "0x6288dfe86f22b53eeb6886ae2d78941de7483743": { score: 66, verdict: "PASS", date: "22 Nov 2026" }, // AGC (Agentic Coin)
+  "0x36fe923c449f6163a601058626def6c83a8f23ae": { score: 54, verdict: "CAUTION", date: "22 Nov 2026" }, // Riftera
+  "0x95af9fe16fe5c1741b5e3f1b3b045a8c2470eca9": { score: 74, verdict: "PASS", date: "22 Nov 2026" }, // PACTURE
+  "0x0a2a07ef09dd7d83e2312476f0588abaa3e34ce3": { score: 57, verdict: "CAUTION", date: "22 Nov 2026" }, // Agentic Gangster
+  "0xe2ce6ab80874fa9fa2aae65d277dd6b8e65c9de0": { score: 44, verdict: "AVOID", date: "22 Nov 2026" }, // Flap
+  "0xecbd1e3e415427c11873bed75042a2e5ef0f88a0": { score: 40, verdict: "AVOID", date: "22 Nov 2026" }, // 1% Club
+  "0xa2643b889eeb232708a644f15f70f951773ddef9": { score: 49, verdict: "AVOID", date: "22 Nov 2026" }, // Agent (AGENT)
+  "0x5690b34da3efc5d55511c37a0ad4988cace8d912": { score: 60, verdict: "CAUTION", date: "22 Nov 2026" }, // Agent Legends
+  "0xfe5ab5ce9b1d86a55d70e7d0573a14d559029c18": { score: 55, verdict: "CAUTION", date: "22 Nov 2026" }, // Agent Periodic Lab
+  "0x9611f8a6e9890e47a2ddaa3ea7604fa94a5ce76d": { score: 78, verdict: "PASS", date: "22 Nov 2026" }, // AgentBond
+  "0x639329f5dc4317c44d9fed961a1217ba845012f7": { score: 60, verdict: "CAUTION", date: "22 Nov 2026" }, // AgentLabs SPEC
+  "0x5d43566e40e2e6d396ec10224363e5cacfc40cf0": { score: 77, verdict: "PASS", date: "22 Nov 2026" }, // Brushborn
+  "0x1fccfab61461c4b5c4d1b16580d12a7e32012baa": { score: 45, verdict: "AVOID", date: "22 Nov 2026" }, // Everything Is Mine
+  "0x8f1e4787f131990d793af253d118aed7fe1b29af": { score: 81, verdict: "PASS", date: "22 Nov 2026" } // Floppy Agents
 };
 
 function auditOf(address) {
@@ -548,7 +577,12 @@ function auditLaneBadgeHtml(a) {
 function auditLineHtml(address) {
   const a = auditOf(address);
   if (!a) return `<div class="meta" style="margin-top:6px">Audit: not audited yet.</div>`;
-  return `<div class="meta" style="margin-top:6px">Audit ${a.score}/100 ${escapeHtml(a.verdict)} &middot; Hunter ${a.hunter} &middot; ${escapeHtml(a.supply)} &middot; ${escapeHtml(a.price)} &middot; snapshot ${escapeHtml(a.date)}</div>`;
+  const parts = ["Audit " + a.score + "/100 " + escapeHtml(a.verdict)];
+  if (a.hunter != null) parts.push("Hunter " + a.hunter);
+  if (a.supply) parts.push(escapeHtml(a.supply));
+  if (a.price) parts.push(escapeHtml(a.price));
+  parts.push("snapshot " + escapeHtml(a.date));
+  return `<div class="meta" style="margin-top:6px">` + parts.join(" &middot; ") + `</div>`;
 }
 
 async function initReadOnly() {
@@ -722,7 +756,7 @@ const SEED_PROJECTS = [
     { name: "THE WALL", contract: "0xa804bBBe09fa2F5832d11D09329cc4230D1d7899", category: "NFT", description: "NFT 20.000 edisi; 1 gratis per agent via mintFree(), lalu 0,001 BNB. 2 slot gratis per blok — balapan ketat.", website: "https://thewall-agentic.xyz", x: "@thewall_agentic", verified: false },
     { name: "SnakeAgentNFT", contract: "0xf7c1ba2286cee6eef10cc264664168fd015127b1", category: "NFT", description: "NFT ular 4.444 edisi; mint pertama gratis untuk pemegang Agent ID. Gate terverifikasi; kontrak belum terverifikasi Sourcify.", website: "https://snakegameio.online", x: "@snakegameionft", verified: false },
     { name: "DogePunk", contract: "0xea404392be487b90f45b8436a52623bc7dbd8515", category: "NFT", description: "5.000 Doge Punk pixel-art; mint gratis 1/wallet untuk pemegang Agent ID, reveal Chainlink VRF. Situs menjanjikan penghasilan $DPUNK — belum terverifikasi.", website: "https://dogepunk.site", x: "@dogepunkk", verified: true },
-    { name: "GETAGENT ($GETA)", contract: "0x233188403A5301220cc40f47446628d722e00F6c", category: "Token", description: "Token Agent ID; mint pertama gratis (syarat share post X dulu). Kontrak mint dan token terverifikasi Sourcify.", website: "https://getagent-bnb.web.app", x: "@GetAgentBNB", verified: false },
+    { name: "GETAGENT ($GETA)", contract: "0x233188403A5301220cc40f47446628d722e00F6c", category: "Token", description: "Token Agent ID; mint pertama gratis (syarat share post X dulu). Alamat terdaftar adalah minter, bukan token.", website: "https://getagent-bnb.web.app", x: "@GetAgentBNB", verified: false },
     { name: "AGC (Agentic Coin)", contract: "0x6288DFe86f22B53eEB6886aE2D78941de7483743", category: "Token", description: "Token ekosistem Agent ID; mint Mode A gratis per Agent ID, klaim harian. Token: 0x63dea5… (terverifikasi).", website: "https://agcc.fun", x: "@Agentic_coin", verified: true },
     { name: "Riftera", contract: "0x36fE923C449F6163a601058626dEf6c83a8f23AE", category: "NFT", description: "NFT piksel 1.111 edisi dengan gate Agent ID. Lane gratis 444/444 habis; lane berbayar 0,001 BNB. Pemegang ikut undian mingguan Rift Shards.", website: "https://riftera.net", x: "@RifteraPixel", verified: true },
     { name: "PACTURE", contract: "0x95AF9fe16fE5c1741b5E3F1b3b045a8c2470eca9", category: "Fair Mint", description: "Fair mint khusus Agent ID: 11.000 share (7.700 gratis + 3.300 berbayar 0,5 USDT), refundable sampai penuh. Lane gratis sudah habis.", website: "https://pacture.pvpmint.com", x: "@WAGAgent", verified: true },
@@ -730,7 +764,6 @@ const SEED_PROJECTS = [
     { name: "Flap", contract: "0xe2cE6ab80874Fa9Fa2aAE65D277Dd6B8e65C9De0", category: "Launchpad", description: "Launchpad bonding curve BNB Chain (didukung YZi Labs). Fitur ID Agent Curve: hanya pemegang Agent ID yang bisa trading di kurva internal.", website: "https://flap.sh", x: "@flapdotsh", verified: true },
     { name: "1% Club", contract: "0xEcBd1e3e415427c11873BED75042a2E5Ef0f88a0", category: "NFT", description: "2,222 pixel wall adapters stuck at 1%. Agent-only mint on BNB Chain. Free lane via on-chain puzzle.", website: "https://onepercentclub-c5h.pages.dev", x: "@theOnePctClub", verified: false },
     { name: "Agent (AGENT)", contract: "0xA2643B889eEb232708a644f15f70f951773dDEF9", category: "Token", description: "Fair-launch token; 9,000 tokens claimable free per Agent.", website: "https://agentbnbai.com", x: "@Agentbnbai", verified: true },
-    { name: "Agent Card Studio", contract: "0x0716bD547494e7B8E45C15266F03a43915982C6e", category: "NFT", description: "Agent ID Card NFTs; free mint sold out, paid mint 0.0012 BNB open.", website: "https://agentcard.cloud", x: "@AgentCardFun", verified: false },
     { name: "Agent Legends", contract: "0x5690B34dA3eFc5d55511c37A0Ad4988CACE8d912", category: "NFT", description: "First 1,000 free (gas only, 1 per wallet) via claimFreeNFT(), then 0.0005 BNB each, max 10 per wallet, supply 2,000", website: "https://agent.agentlegends.workers.dev", x: "@agent_legends", verified: true },
     { name: "Agent Periodic Lab", contract: "0xfE5Ab5ce9b1D86a55d70E7D0573a14D559029C18", category: "NFT", description: "Periodic-table cards — first one free per Agent ID.", website: "https://build-100.com/lab", x: "@BUILD100", verified: true },
     { name: "AgentBond", contract: "0x9611f8A6E9890E47A2ddAa3eA7604fa94A5cE76d", category: "Launchpad", description: "Bonding-curve launchpad for Agent ID (.ai) holders. No coding, no upfront liquidity.", website: "https://agentbond-launchpad.vercel.app", x: "@agentbond_fun", verified: true },
@@ -771,7 +804,11 @@ function renderQuickAdd() {
     const ad = auditOf(s.contract);
     if (ad) {
       au.className = "seedaudit";
-      au.textContent = "Audit " + ad.score + "/100 " + ad.verdict + " · " + (ad.lane === "open" ? "Free mint open" : ad.lane === "soldout" ? "Sold out" : "Free mint closed");
+      let t = "Audit " + ad.score + "/100 " + ad.verdict;
+      if (ad.lane === "open") t += " · Free mint open";
+      else if (ad.lane === "soldout") t += " · Sold out";
+      else if (ad.lane === "closed") t += " · Free mint closed";
+      au.textContent = t;
     } else {
       au.className = "seednoaudit";
       au.textContent = "Not audited yet";
@@ -922,7 +959,7 @@ function projectCard(p, live) {
   html += `<div class="meta" style="margin-top:4px">Submitted by <span class="addr">${truncAddr(p.submitter)}</span> &middot; ${new Date(p.createdAt * 1000).toLocaleDateString()}</div>`;
   html += auditLineHtml(p.projectContract);
   const a = auditOf(p.projectContract);
-  if (a && a.lane === "open" && a.mint) {
+  if (a && a.lane === "open" && a.mint && a.score >= 50) {
     html += `<div class="sigrow"><button data-mint="1">Mint — free, gas only</button></div>`;
   } else if (a && a.lane === "soldout") {
     html += `<div class="meta" style="margin-top:6px">Mint: sold out — nothing left to mint.</div>`;
@@ -1148,9 +1185,15 @@ function modalHtml(p) {
   h += p.description ? `<p style="font-size:14px;line-height:1.6;color:#c4cdd8">${escapeHtml(p.description)}</p>` : `<p class="meta">No description provided.</p>`;
   const ma = auditOf(p.projectContract);
   if (ma) {
-    h += `<div class="kv"><span>Audit (Nina)</span><span>${ma.score}/100 ${escapeHtml(ma.verdict)} &middot; Hunter ${ma.hunter} &middot; ${escapeHtml(ma.date)}</span></div>`;
-    h += `<div class="kv"><span>Free mint</span><span>${ma.lane === "open" ? "Open" : ma.lane === "soldout" ? "Sold out" : "Closed"} &middot; ${escapeHtml(ma.supply)} &middot; ${escapeHtml(ma.price)}</span></div>`;
-    h += `<p style="font-size:13px;line-height:1.6;color:#9aa7b4">${escapeHtml(ma.note)} Scores are a snapshot from ${escapeHtml(ma.date)}, not a recommendation to mint.</p>`;
+    h += `<div class="kv"><span>Audit (Nina)</span><span>${ma.score}/100 ${escapeHtml(ma.verdict)}${ma.hunter != null ? " &middot; Hunter " + ma.hunter : ""} &middot; ${escapeHtml(ma.date)}</span></div>`;
+    const laneParts = [];
+    if (ma.lane === "open") laneParts.push("Open");
+    else if (ma.lane === "soldout") laneParts.push("Sold out");
+    else if (ma.lane === "closed") laneParts.push("Closed");
+    if (ma.supply) laneParts.push(escapeHtml(ma.supply));
+    if (ma.price) laneParts.push(escapeHtml(ma.price));
+    if (laneParts.length) h += `<div class="kv"><span>Free mint</span><span>${laneParts.join(" &middot; ")}</span></div>`;
+    if (ma.note) h += `<p style="font-size:13px;line-height:1.6;color:#9aa7b4">${escapeHtml(ma.note)} Scores are a snapshot from ${escapeHtml(ma.date)}, not a recommendation to mint.</p>`;
   } else {
     h += `<div class="kv"><span>Audit (Nina)</span><span>Not audited yet</span></div>`;
   }
@@ -1160,7 +1203,7 @@ function modalHtml(p) {
   if (xu) h += `<div class="kv"><span>X</span><a href="${xu}" target="_blank" rel="noopener">${escapeHtml(p.xHandle)}</a></div>`;
   h += `<div class="kv"><span>Submitted by</span><span class="addr">${truncAddr(p.submitter)}</span></div>`;
   h += `<div class="kv"><span>Listed</span><span>${new Date(p.createdAt * 1000).toLocaleDateString()}</span></div>`;
-  if (ma && ma.lane === "open" && ma.mint) {
+  if (ma && ma.lane === "open" && ma.mint && ma.score >= 50) {
     h += `<div class="sigrow"><button data-mint="1">Mint — free, gas only</button></div>`;
   } else if (ma && ma.lane === "soldout") {
     h += `<div class="meta" style="margin-top:8px">Mint: sold out — nothing left to mint.</div>`;

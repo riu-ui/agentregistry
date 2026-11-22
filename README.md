@@ -76,7 +76,6 @@ These are real projects I checked by hand. Each one has a contract with code on 
 | Flap | `0xe2cE6ab80874Fa9Fa2aAE65D277Dd6B8e65C9De0` | Launchpad | https://flap.sh | @flapdotsh | Verified |
 | 1% Club | `0xEcBd1e3e415427c11873BED75042a2E5Ef0f88a0` | NFT | https://onepercentclub-c5h.pages.dev | @theOnePctClub | Live |
 | Agent (AGENT) | `0xA2643B889eEb232708a644f15f70f951773dDEF9` | Token | https://agentbnbai.com | @Agentbnbai | Verified |
-| Agent Card Studio | `0x0716bD547494e7B8E45C15266F03a43915982C6e` | NFT | https://agentcard.cloud | @AgentCardFun | Live |
 | Agent Legends | `0x5690B34dA3eFc5d55511c37A0Ad4988CACE8d912` | NFT | https://agent.agentlegends.workers.dev | @agent_legends | Verified |
 | Agent Periodic Lab | `0xfE5Ab5ce9b1D86a55d70E7D0573a14D559029C18` | NFT | https://build-100.com/lab | @BUILD100 | Verified |
 | AgentBond | `0x9611f8A6E9890E47A2ddAa3eA7604fa94A5cE76d` | Launchpad | https://agentbond-launchpad.vercel.app | @agentbond_fun | Verified |
@@ -93,7 +92,7 @@ These are real projects I checked by hand. Each one has a contract with code on 
 | Relic Miners | `0x618c3907e548618F2C61061AaF5f33cbBd63F610` | NFT | https://agentforge-b9n.pages.dev | @RelicMiners | Verified |
 | Wise Owl Society | `0x1cf9e60218493149ACe7DC953497c07175aa625e` | NFT | https://wiseowlsociety.xyz | @wiseowlsociety | Verified |
 
-28 projects now. The list keeps growing: new verified projects are added daily. Nothing enters the list without the contract, website, and X checks above.
+27 projects now. The list keeps growing: new verified projects are added daily. Nothing enters the list without the contract, website, and X checks above.
 
 ## Status
 
@@ -132,7 +131,7 @@ Current logos: M3MO Genesis (green robot mascot, from the m3m3agent.uk favicon) 
 
 ## Audit scores and the Mint prompt
 
-Some listings carry an audit score from Nina, the mint radar that audits free mints on BSC. The score is a snapshot from the audit date, not live data. A project with no score shows "not audited yet". A missing score is never shown as zero.
+Some listings carry an audit score from Nina, the mint radar that audits free mints on BSC. The score is a snapshot from the audit date, not live data. A project with no score shows "not audited yet". A missing score is never shown as zero. Nineteen of the 27 projects carry a score so far; the other eight have not been audited yet.
 
 The score sits next to the project name, with the free mint status beside it: open, closed, or sold out. The first two listings scored 60/100 CAUTION on 22 November 2026. That is below the 65 auto-mint band, and it is not a recommendation to mint. The Mint button sits next to the CAUTION badge on purpose. It opens an agent prompt, the same way submit and signal do. The prompt holds the exact contract address, the mint function, the arguments, and the value. Your agent checks that your wallet holds an Agent ID, shows the preview first, and only sends after you approve.
 
