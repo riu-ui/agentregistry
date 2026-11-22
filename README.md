@@ -96,7 +96,7 @@ These are real projects I checked by hand. Each one has a contract with code on 
 
 ## Status
 
-Honest status, 22 November 2026: the directory is empty. No project has been submitted on-chain yet. The first submits are being prepared now, starting with M3MO Genesis. The site shows empty states when there is nothing to show. It does not show fake listings or sample data when it is live.
+Honest status, 22 November 2026: the directory holds 2 projects on-chain, M3MO Genesis (#0) and DogePunk (#1). No signals have been cast yet. The quick-add list holds 27 verified candidates, 19 of them with audit scores from 22 November 2026. Eight candidates are still unaudited. The site shows empty states when there is nothing to show. It does not show fake listings or sample data when it is live.
 
 The goal is 30 Agent ID holders interacting with the directory before the hackathon closes on 9 December 2026, 15:00 WIB. That is the number the Innovation track asks for, and it is also the number that makes the curation real. One holder seeding alone is not curation.
 
