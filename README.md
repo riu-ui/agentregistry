@@ -74,8 +74,26 @@ These are real projects I checked by hand. Each one has a contract with code on 
 | PACTURE | `0x95AF9fe16fE5c1741b5E3F1b3b045a8c2470eca9` | Fair Mint | https://pacture.pvpmint.com | @WAGAgent | Verified |
 | Agentic Gangster | `0x0a2a07ef09dd7d83e2312476f0588abaa3e34ce3` | NFT | https://agentic-gangster.pages.dev | @agenticgangster | Verified |
 | Flap | `0xe2cE6ab80874Fa9Fa2aAE65D277Dd6B8e65C9De0` | Launchpad | https://flap.sh | @flapdotsh | Verified |
+| 1% Club | `0xEcBd1e3e415427c11873BED75042a2E5Ef0f88a0` | NFT | https://onepercentclub-c5h.pages.dev | @theOnePctClub | Live |
+| Agent (AGENT) | `0xA2643B889eEb232708a644f15f70f951773dDEF9` | Token | https://agentbnbai.com | @Agentbnbai | Verified |
+| Agent Card Studio | `0x0716bD547494e7B8E45C15266F03a43915982C6e` | NFT | https://agentcard.cloud | @AgentCardFun | Live |
+| Agent Legends | `0x5690B34dA3eFc5d55511c37A0Ad4988CACE8d912` | NFT | https://agent.agentlegends.workers.dev | @agent_legends | Verified |
+| Agent Periodic Lab | `0xfE5Ab5ce9b1D86a55d70E7D0573a14D559029C18` | NFT | https://build-100.com/lab | @BUILD100 | Verified |
+| AgentBond | `0x9611f8A6E9890E47A2ddAa3eA7604fa94A5cE76d` | Launchpad | https://agentbond-launchpad.vercel.app | @agentbond_fun | Verified |
+| AgentLabs SPEC | `0x639329f5dc4317c44D9Fed961a1217ba845012F7` | Game | https://agentlabs.fun | @agentlabnb | Verified |
+| Brushborn | `0x5d43566e40E2e6D396EC10224363E5cAcFc40Cf0` | NFT | https://brushborn.pages.dev | @BrushbornBNB | Verified |
+| Everything Is Mine | `0x1fccfab61461c4b5c4d1b16580d12a7e32012baa` | NFT | https://everythingisfine.website/ | @basebirdevery | Verified |
+| Floppy Agents | `0x8F1E4787f131990d793Af253d118aed7Fe1B29AF` | NFT | https://floppymarket.surge.sh | @Floppyagents | Verified |
+| GLOOP | `0x183CBb52B3C7BCB2433d50dE0Add99B59f4DE4fE` | NFT | https://gloopagent.xyz | @GloopSlimeHQ | Verified |
+| Hackou AI Pass | `0x1e107C43b542eF0d4153d67C1c1a887be60FE3EE` | NFT | https://hackou.com | @HackouTW | Verified |
+| HI-SCORE / 1UP | `0xA74081fd9bc9623A2d9321223C35b41016A7fd65` | NFT | https://insert1up.fun | @INSERT1UP | Verified |
+| Lodepass | `0x31b074C8e77e44F29df285F19d4fc76E6D927d01` | NFT | https://lodepass.github.io/lodepass | @lodepass | Live |
+| MOLT AGENT | `0x4B8150f1a258cD3CE2300fAf682432c52ca48Fc1` | NFT | https://moltagent.pages.dev | @0xadamonly | Verified |
+| Oathbots | `0xb777c52296f0d7d3c5cab7ae0c1aaac6b014b256` | NFT | https://oathbots.pages.dev | @Oathbots | Verified |
+| Relic Miners | `0x618c3907e548618F2C61061AaF5f33cbBd63F610` | NFT | https://agentforge-b9n.pages.dev | @RelicMiners | Verified |
+| Wise Owl Society | `0x1cf9e60218493149ACe7DC953497c07175aa625e` | NFT | https://wiseowlsociety.xyz | @wiseowlsociety | Verified |
 
-The list is growing. I am expanding it to 50 projects, and after that it updates daily with new verified projects. Nothing enters the list without the contract, website, and X checks above.
+28 projects now. The list keeps growing: new verified projects are added daily. Nothing enters the list without the contract, website, and X checks above.
 
 ## Status
 
