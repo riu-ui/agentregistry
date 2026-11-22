@@ -130,6 +130,16 @@ I deliberately did not add a favicon fallback (fetching `<website>/favicon.ico` 
 
 Current logos: M3MO Genesis (green robot mascot, from the m3m3agent.uk favicon) and DogePunk (pixel punk Doge hero art, from dogepunk.site).
 
+## Audit scores and the Mint prompt
+
+Some listings carry an audit score from Nina, the mint radar that audits free mints on BSC. The score is a snapshot from the audit date, not live data. A project with no score shows "not audited yet". A missing score is never shown as zero.
+
+The score sits next to the project name, with the free mint status beside it: open, closed, or sold out. The first two listings scored 60/100 CAUTION on 22 November 2026. That is below the 65 auto-mint band, and it is not a recommendation to mint. The Mint button sits next to the CAUTION badge on purpose. It opens an agent prompt, the same way submit and signal do. The prompt holds the exact contract address, the mint function, the arguments, and the value. Your agent checks that your wallet holds an Agent ID, shows the preview first, and only sends after you approve.
+
+A Mint button only appears when the audit proves the free mint function with certainty. A sold out project shows "Sold out" instead. No mint function is ever guessed. New scores drop into the `AUDITS` object in `index.html` as one entry each. No code change is needed.
+
+A project only joins the verified list when it has a contract with code on BSC, a readable official website, and a verifiable official X account. A project without a real X account does not get in. Antopia scored 82/100 in the audit but has no official X, so it stays off the list.
+
 ## Tests
 
 Foundry suite, 26/26 passing. It covers the holder gate, submitting (happy path and events), duplicate and zero-address reverts, non-holder reverts, every field limit, the constructor, upvotes and flags, double-signal reverts, reason mismatch, bad reason, and signalling a project that does not exist.

@@ -95,8 +95,10 @@ const __$G=typeof globalThis!=="undefined"?globalThis:typeof window!=="undefined
   .ar .seeditem .seedcat { color: #8b98ab; font-size: 12px; }
   .ar .seeditem .seedok { color: #3fb950; font-size: 12px; font-weight: 600; }
   .ar .seeditem .seedlive { color: #d29922; font-size: 12px; font-weight: 600; }
-  .ar .seeditem .seedweb { color: #8b98ab; font-size: 12px; word-break: break-all; text-decoration: underline; }
+  .ar .seedwrap .seedweb { display: block; color: #8b98ab; font-size: 12px; word-break: break-all; text-decoration: underline; margin: 5px 2px 0; }
   .ar .seeditem .seedcta { margin-left: auto; background: #f0b90b; color: #111; border-radius: 8px; padding: 6px 12px; font-weight: 700; font-size: 13px; white-space: nowrap; }
+  .ar .seeditem .seedaudit { color: #f0b90b; font-size: 12px; font-weight: 600; }
+  .ar .seeditem .seednoaudit { color: #8b98ab; font-size: 12px; }
   .ar .score { font-size: 13px; font-weight: 700; }
   .ar .score.pos { color: #3fb950; }
   .ar .score.neg { color: #f85149; }
@@ -501,6 +503,54 @@ function avatarHtml(address, name, size) {
   return avatarTileHtml(address, name, size);
 }
 
+// Nina audit findings, 22 Nov 2026 (full audit: audit-registry-2026-11-22.md).
+// Keyed by lowercase contract address. A new score drops in as one entry,
+// no code change. Scores are a snapshot from the audit date, not live data.
+// A project with no entry shows "not audited yet", never a zero.
+// mint: { fn, args, value } is only present when the audit proves the free
+// mint function with certainty. Mint entries are free mints only (value 0);
+// a paid mint never gets a Mint button, and a mint function is never guessed.
+const AUDITS = {
+  "0x08be8a0727b6fc801171c1f4f4dd547ea44ca339": {
+    score: 60, hunter: 36, verdict: "CAUTION",
+    lane: "open", price: "Free, gas only", supply: "6,569 / 10,000 minted",
+    mint: { fn: "mint()", args: "", value: "0" },
+    date: "22 Nov 2026",
+    note: "Free mint open and quota intact, but the website homepage is a MEME token page with no M3MO mention, its X account does not exist, and the base URI can change."
+  },
+  "0xea404392be487b90f45b8436a52623bc7dbd8515": {
+    score: 60, hunter: 39, verdict: "CAUTION",
+    lane: "soldout", price: "Free, gas only", supply: "5,000 / 5,000 minted",
+    date: "22 Nov 2026",
+    note: "Sold out, mint closed. VRF reveal and $DPUNK mining are live, but the $DPUNK value is unverified and no floor has been observed."
+  }
+};
+
+function auditOf(address) {
+  return AUDITS[String(address || "").toLowerCase()] || null;
+}
+
+function auditBadgeHtml(address) {
+  const a = auditOf(address);
+  if (!a) return `<span class="badge">Not audited yet</span>`;
+  const color = a.score >= 65 ? "#3fb950" : a.score >= 50 ? "#f0b90b" : "#f85149";
+  return `<span class="badge" style="color:${color};border-color:${color}66">Audit ${a.score}/100 ${escapeHtml(a.verdict)}</span>`;
+}
+
+function auditLaneBadgeHtml(a) {
+  if (!a) return "";
+  if (a.lane === "open") return `<span class="badge" style="color:#3fb950;border-color:#3fb95066">Free mint open</span>`;
+  if (a.lane === "soldout") return `<span class="badge" style="color:#f85149;border-color:#f8514966">Sold out</span>`;
+  if (a.lane === "closed") return `<span class="badge" style="color:#f85149;border-color:#f8514966">Free mint closed</span>`;
+  return "";
+}
+
+function auditLineHtml(address) {
+  const a = auditOf(address);
+  if (!a) return `<div class="meta" style="margin-top:6px">Audit: not audited yet.</div>`;
+  return `<div class="meta" style="margin-top:6px">Audit ${a.score}/100 ${escapeHtml(a.verdict)} &middot; Hunter ${a.hunter} &middot; ${escapeHtml(a.supply)} &middot; ${escapeHtml(a.price)} &middot; snapshot ${escapeHtml(a.date)}</div>`;
+}
+
 async function initReadOnly() {
   if (typeof ethers === "undefined") {
     $("projects").innerHTML = '<div class="card">Web3 library failed to load. Try refreshing, or open this page in another browser.</div>';
@@ -651,10 +701,24 @@ function buildSubmitPrompt(seed) {
   showPrompt(text);
 }
 
+// Mint prompt: same pattern as submit/signal — a copy-paste prompt for the
+// visitor's own AI agent, which sends the transaction from their wallet.
+// Only ever built from an AUDITS entry whose mint function the audit proved.
+function buildMintPrompt(p, a) {
+  const text = "Mint from \"" + escPrompt(p.name) + "\" on BNB Smart Chain (chain 56).\n\n"
+    + "Project contract: " + p.projectContract + "\n"
+    + "Function: " + a.mint.fn + "\n"
+    + "Arguments (exact): " + (a.mint.args ? a.mint.args : "none") + "\n"
+    + "Value: " + a.mint.value + " (free mint, gas only)\n\n"
+    + "Audit snapshot (Nina, " + a.date + "): " + a.score + "/100 " + a.verdict + ", Hunter " + a.hunter + ". " + a.note + " This score is a snapshot from " + a.date + ", not a recommendation to mint."
+    + promptFooter();
+  showPrompt(text);
+}
+
 // Verified seed projects (researched 20 Nov 2026; contract status re-checked on BSC via Sourcify v2 on 22 Nov 2026).
 // verified = true: source verified (Sourcify match). verified = false: code confirmed at the address, source not verified yet.
 const SEED_PROJECTS = [
-    { name: "M3MO Genesis", contract: "0x08BE8a0727b6fc801171c1F4F4Dd547EA44Ca339", category: "NFT", description: "NFT Genesis; 1 gratis per Agent ID (gas saja). Gate Agent ID terkonfirmasi on-chain; skor 89 di indeks MINTS The Colony.", website: "https://m3m3agent.uk", x: "@M3M3AGENT", verified: true },
+    { name: "M3MO Genesis", contract: "0x08BE8a0727b6fc801171c1F4F4Dd547EA44Ca339", category: "NFT", description: "NFT Genesis; 1 gratis per Agent ID (gas saja). Gate Agent ID terkonfirmasi on-chain.", website: "https://m3m3agent.uk", x: "@M3M3AGENT", verified: true },
     { name: "THE WALL", contract: "0xa804bBBe09fa2F5832d11D09329cc4230D1d7899", category: "NFT", description: "NFT 20.000 edisi; 1 gratis per agent via mintFree(), lalu 0,001 BNB. 2 slot gratis per blok — balapan ketat.", website: "https://thewall-agentic.xyz", x: "@thewall_agentic", verified: false },
     { name: "SnakeAgentNFT", contract: "0xf7c1ba2286cee6eef10cc264664168fd015127b1", category: "NFT", description: "NFT ular 4.444 edisi; mint pertama gratis untuk pemegang Agent ID. Gate terverifikasi; kontrak belum terverifikasi Sourcify.", website: "https://snakegameio.online", x: "@snakegameionft", verified: false },
     { name: "DogePunk", contract: "0xea404392be487b90f45b8436a52623bc7dbd8515", category: "NFT", description: "5.000 Doge Punk pixel-art; mint gratis 1/wallet untuk pemegang Agent ID, reveal Chainlink VRF. Situs menjanjikan penghasilan $DPUNK — belum terverifikasi.", website: "https://dogepunk.site", x: "@dogepunkk", verified: true },
@@ -689,6 +753,8 @@ function renderQuickAdd() {
   if (!box) return;
   box.innerHTML = "";
   SEED_PROJECTS.forEach(s => {
+    const wrap = document.createElement("div");
+    wrap.className = "seedwrap";
     const b = document.createElement("button");
     b.type = "button";
     b.className = "seeditem";
@@ -701,19 +767,28 @@ function renderQuickAdd() {
     const bd = document.createElement("span");
     bd.className = s.verified ? "seedok" : "seedlive";
     bd.textContent = s.verified ? "✓ Verified contract on BSC" : "✓ Contract live on BSC";
+    const au = document.createElement("span");
+    const ad = auditOf(s.contract);
+    if (ad) {
+      au.className = "seedaudit";
+      au.textContent = "Audit " + ad.score + "/100 " + ad.verdict + " · " + (ad.lane === "open" ? "Free mint open" : ad.lane === "soldout" ? "Sold out" : "Free mint closed");
+    } else {
+      au.className = "seednoaudit";
+      au.textContent = "Not audited yet";
+    }
+    const cta = document.createElement("span");
+    cta.className = "seedcta";
+    cta.textContent = "Get prompt →";
+    b.append(nm, ct, bd, au, cta);
+    b.onclick = () => buildSubmitPrompt(s);
     const wb = document.createElement("a");
     wb.className = "seedweb";
     wb.href = s.website;
     wb.target = "_blank";
     wb.rel = "noopener";
     wb.textContent = s.website.replace(/^https?:\/\//, "");
-    wb.addEventListener("click", e => e.stopPropagation());
-    const cta = document.createElement("span");
-    cta.className = "seedcta";
-    cta.textContent = "Get prompt →";
-    b.append(nm, ct, bd, wb, cta);
-    b.onclick = () => buildSubmitPrompt(s);
-    box.appendChild(b);
+    wrap.append(b, wb);
+    box.appendChild(wrap);
   });
 }
 
@@ -835,7 +910,7 @@ function projectCard(p, live) {
   const xu = xUrl(p.xHandle);
   let html = `<div class="pcard-top"><div style="display:flex;gap:12px;align-items:flex-start;min-width:0">${avatarHtml(p.projectContract, p.name, 44)}`
     + `<div style="min-width:0"><h3 style="margin:0 0 6px;overflow:hidden;text-overflow:ellipsis">${escapeHtml(p.name)}</h3>`
-    + `<span class="badge" style="color:${color};border-color:${color}66">${escapeHtml(p.category)}</span>${statusBadge(p)}</div></div>`
+    + `<span class="badge" style="color:${color};border-color:${color}66">${escapeHtml(p.category)}</span>${statusBadge(p)}${auditBadgeHtml(p.projectContract)}${auditLaneBadgeHtml(auditOf(p.projectContract))}</div></div>`
     + `<div class="scorebox"><div class="score ${s.cls}">${s.txt}</div><div class="meta">${p.upvotes} up &middot; ${p.flags} flags</div></div></div>`;
   if (p.description) html += `<p class="desc">${escapeHtml(p.description)}</p>`;
   html += `<div class="ratiobar"><div class="up" style="width:${s.upW}%"></div><div class="fl" style="width:${s.flW}%"></div></div>`
@@ -845,6 +920,13 @@ function projectCard(p, live) {
   if (xu) links.push(`<a href="${xu}" target="_blank" rel="noopener">X</a>`);
   if (links.length) html += `<div class="meta linkrow" style="margin-top:4px">${links.join("")}</div>`;
   html += `<div class="meta" style="margin-top:4px">Submitted by <span class="addr">${truncAddr(p.submitter)}</span> &middot; ${new Date(p.createdAt * 1000).toLocaleDateString()}</div>`;
+  html += auditLineHtml(p.projectContract);
+  const a = auditOf(p.projectContract);
+  if (a && a.lane === "open" && a.mint) {
+    html += `<div class="sigrow"><button data-mint="1">Mint — free, gas only</button></div>`;
+  } else if (a && a.lane === "soldout") {
+    html += `<div class="meta" style="margin-top:6px">Mint: sold out — nothing left to mint.</div>`;
+  }
   if (live) {
     html += `<div class="sigrow"><button data-signal="up">Upvote</button><button data-signal="flag" class="flagbtn">Flag</button></div>`;
   }
@@ -1029,6 +1111,13 @@ function renderList() {
 }
 
 function attachCardHandlers(card, p) {
+  card.querySelectorAll("button[data-mint]").forEach(btn => {
+    btn.onclick = e => {
+      e.stopPropagation();
+      const a = auditOf(p.projectContract);
+      if (a && a.mint) buildMintPrompt(p, a);
+    };
+  });
   card.querySelectorAll("button[data-signal]").forEach(btn => {
     btn.onclick = e => {
       e.stopPropagation();
@@ -1053,16 +1142,29 @@ function modalHtml(p) {
   const xu = xUrl(p.xHandle);
   const pageLink = location.href.split("#")[0] + "#project-" + p.id;
   const tweet = "https://twitter.com/intent/tweet?text=" + encodeURIComponent("Check out " + p.name + " on Agent Registry — community score " + s.txt) + "&url=" + encodeURIComponent(pageLink);
-  let h = `<div style="display:flex;gap:14px;align-items:center;margin-bottom:12px">${avatarHtml(p.projectContract, p.name, 52)}<div><h2 style="margin:0 0 4px;font-size:22px">${escapeHtml(p.name)}</h2><span class="badge" style="color:${color};border-color:${color}66">${escapeHtml(p.category)}</span>${statusBadge(p)}</div></div>`;
+  let h = `<div style="display:flex;gap:14px;align-items:center;margin-bottom:12px">${avatarHtml(p.projectContract, p.name, 52)}<div><h2 style="margin:0 0 4px;font-size:22px">${escapeHtml(p.name)}</h2><span class="badge" style="color:${color};border-color:${color}66">${escapeHtml(p.category)}</span>${statusBadge(p)}${auditBadgeHtml(p.projectContract)}${auditLaneBadgeHtml(auditOf(p.projectContract))}</div></div>`;
   h += `<div style="display:flex;justify-content:space-between;align-items:baseline"><span class="score ${s.cls}" style="font-size:24px">${s.txt}</span><span class="meta">${p.upvotes} up &middot; ${p.flags} flags &middot; ${s.total} signals</span></div>`;
   h += `<div class="ratiobar"><div class="up" style="width:${s.upW}%"></div><div class="fl" style="width:${s.flW}%"></div></div>`;
   h += p.description ? `<p style="font-size:14px;line-height:1.6;color:#c4cdd8">${escapeHtml(p.description)}</p>` : `<p class="meta">No description provided.</p>`;
+  const ma = auditOf(p.projectContract);
+  if (ma) {
+    h += `<div class="kv"><span>Audit (Nina)</span><span>${ma.score}/100 ${escapeHtml(ma.verdict)} &middot; Hunter ${ma.hunter} &middot; ${escapeHtml(ma.date)}</span></div>`;
+    h += `<div class="kv"><span>Free mint</span><span>${ma.lane === "open" ? "Open" : ma.lane === "soldout" ? "Sold out" : "Closed"} &middot; ${escapeHtml(ma.supply)} &middot; ${escapeHtml(ma.price)}</span></div>`;
+    h += `<p style="font-size:13px;line-height:1.6;color:#9aa7b4">${escapeHtml(ma.note)} Scores are a snapshot from ${escapeHtml(ma.date)}, not a recommendation to mint.</p>`;
+  } else {
+    h += `<div class="kv"><span>Audit (Nina)</span><span>Not audited yet</span></div>`;
+  }
   h += `<div class="kv"><span>Contract</span><span><a class="addr" href="https://bscscan.com/address/${p.projectContract}" target="_blank" rel="noopener">${truncAddr(p.projectContract)}</a><button class="copybtn" data-copy="${p.projectContract}">Copy</button></span></div>`;
   h += `<div class="kv"><span>Share</span><span><button class="copybtn" data-link="${p.id}">Copy project link</button><a class="xshare" href="${escapeHtml(tweet)}" target="_blank" rel="noopener">Share on X</a></span></div>`;
   if (url) h += `<div class="kv"><span>Website</span><a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(p.website)}</a></div>`;
   if (xu) h += `<div class="kv"><span>X</span><a href="${xu}" target="_blank" rel="noopener">${escapeHtml(p.xHandle)}</a></div>`;
   h += `<div class="kv"><span>Submitted by</span><span class="addr">${truncAddr(p.submitter)}</span></div>`;
   h += `<div class="kv"><span>Listed</span><span>${new Date(p.createdAt * 1000).toLocaleDateString()}</span></div>`;
+  if (ma && ma.lane === "open" && ma.mint) {
+    h += `<div class="sigrow"><button data-mint="1">Mint — free, gas only</button></div>`;
+  } else if (ma && ma.lane === "soldout") {
+    h += `<div class="meta" style="margin-top:8px">Mint: sold out — nothing left to mint.</div>`;
+  }
   if (liveMode) {
     h += `<div class="sigrow"><button data-signal="up">Upvote</button><button data-signal="flag" class="flagbtn">Flag</button></div>`;
     h += `<div class="meta" style="margin-top:8px">Upvoting or flagging opens an agent prompt — no wallet connection needed.</div>`;
@@ -1072,6 +1174,12 @@ function modalHtml(p) {
 }
 
 function attachModalHandlers(body, p) {
+  body.querySelectorAll("button[data-mint]").forEach(btn => {
+    btn.onclick = () => {
+      const a = auditOf(p.projectContract);
+      if (a && a.mint) buildMintPrompt(p, a);
+    };
+  });
   body.querySelectorAll("button[data-signal]").forEach(btn => {
     btn.onclick = () => {
       if (btn.dataset.signal === "flag") showReasonPicker(btn.parentElement, p, fillModal);
