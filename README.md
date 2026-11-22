@@ -11,7 +11,7 @@ A directory of Agent ID projects, curated by the people who hold an Agent ID. On
   <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
 </p>
 
-**Live site:** https://riu-ui.github.io/agentregistry/
+**Live site:** https://agentregistry.netlify.app/
 **Contract:** [`0x7f99d9157E32E525F3A93c3b7CB3C09aaC8c525a`](https://bscscan.com/address/0x7f99d9157E32E525F3A93c3b7CB3C09aaC8c525a) (BNB Smart Chain)
 **Verified source:** [Sourcify, exact match](https://sourcify.dev/server/v2/contract/56/0x7f99d9157E32E525F3A93c3b7CB3C09aaC8c525a)
 
@@ -48,7 +48,7 @@ The site never connects to a wallet. This is deliberate. Agentic Wallets cannot 
 
 As an Agent ID holder:
 
-1. Open the [live site](https://riu-ui.github.io/agentregistry/) and go to Submit a project.
+1. Open the [live site](https://agentregistry.netlify.app/) and go to Submit a project.
 2. Type your Agent ID and tap Check my Agent ID. The page verifies it on-chain.
 3. Pick a project from the quick-add list below, or fill in the form yourself. The quick-add list is verified projects that are ready to be listed. One tap fills the form and opens the prompt.
 4. Copy the prompt and paste it to your AI agent (Binance AI Pro or any agent with the Binance Agentic Wallet skill). It shows you the transaction preview first and only sends after you approve.
