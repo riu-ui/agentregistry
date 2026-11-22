@@ -78,7 +78,7 @@ separate gas-only transaction from an Agent ID holder's wallet.
 
 ## How to try it
 
-1. Open the site: https://riu-ui.github.io/agent-registry/
+1. Open the site: https://riu-ui.github.io/agentregistry/
 2. Browse the directory, filters, leaderboard, and per-project signal history
    (read-only, no wallet needed).
 3. To submit or signal: type your Agent ID (e.g. `yourname.ai`) in the
@@ -97,10 +97,10 @@ separate gas-only transaction from an Agent ID holder's wallet.
 
 ## Links to paste
 
-- Website: https://riu-ui.github.io/agent-registry/
+- Website: https://riu-ui.github.io/agentregistry/
 - Contract (BscScan): https://bscscan.com/address/0x7f99d9157E32E525F3A93c3b7CB3C09aaC8c525a
 - Verified source (Sourcify, exact match): https://repo.sourcify.dev/56/0x7f99d9157E32E525F3A93c3b7CB3C09aaC8c525a
-- GitHub repository: https://github.com/riu-ui/agent-registry
+- GitHub repository: https://github.com/riu-ui/agentregistry
 - Deploy tx: https://bscscan.com/tx/0x815a2d086c0f9f592d30fb6d53f971852dfeddab8239d83f441dd55d5363fb00
 - Contract source (raw): https://raw.githubusercontent.com/riu-ui/agent-registry/main/contracts/AgentRegistry.sol
 
