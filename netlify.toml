@@ -1,0 +1,5 @@
+# Netlify config for the Agent Registry site.
+# The repo root is the publish directory (index.html lives here).
+# No build step: the page is a single static HTML file.
+[build]
+  publish = "."
