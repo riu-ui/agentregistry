@@ -1158,6 +1158,9 @@ function renderSampleActivity() {
 async function loadActivity() {
   if (!liveMode) { renderSampleActivity(); return; }
   $("actNote").textContent = "From on-chain events";
+  // No projects on-chain means no submit/signal events can exist — show the
+  // honest empty state without running the (heavy) 7-day event scan at all.
+  if (!allItems.length) { renderActivityList([]); return; }
   try {
     const ev = await ensureEvents();
     const raw = [];
@@ -1213,6 +1216,8 @@ function renderSampleLeaderboard() {
 
 async function renderLeaderboard() {
   if (!liveMode) { renderSampleLeaderboard(); return; }
+  // No projects on-chain means no contributions can exist — skip the scan.
+  if (!allItems.length) { drawLeaderboard(new Map()); $("lbNote").textContent = "From on-chain events, last 7 days"; return; }
   try {
     const ev = await ensureEvents();
     const tally = new Map();
@@ -1259,6 +1264,8 @@ function renderSampleChart() {
 
 async function renderChart() {
   if (!liveMode) { renderSampleChart(); return; }
+  // No projects on-chain means no signals can exist — draw the empty chart, skip the scan.
+  if (!allItems.length) { drawChart(Array.from({ length: 7 }, () => ({ up: 0, fl: 0 }))); $("chartNote").textContent = "Approx. daily buckets from on-chain events (28,800 blocks per day). Green = upvotes, red = flags."; return; }
   try {
     const ev = await ensureEvents();
     const buckets = Array.from({ length: 7 }, () => ({ up: 0, fl: 0 }));
@@ -1289,7 +1296,7 @@ async function loadProjects() {
     loadActivity();
     renderLeaderboard();
     renderChart();
-    ensureEvents().then(ev => { computeLiveReasonCounts(ev); if (filterReason) renderList(); }).catch(() => {});
+    if (allItems.length) ensureEvents().then(ev => { computeLiveReasonCounts(ev); if (filterReason) renderList(); }).catch(() => {});
   } catch (e) {
     $("projects").innerHTML = '<div class="card">Could not load projects from the contract. Check your connection and refresh.</div>';
   }
