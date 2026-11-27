@@ -91,8 +91,9 @@ These are real projects I checked by hand. Each one has a contract with code on 
 | Oathbots | `0xb777c52296f0d7d3c5cab7ae0c1aaac6b014b256` | NFT | https://oathbots.pages.dev | @Oathbots | Verified |
 | Relic Miners | `0x618c3907e548618F2C61061AaF5f33cbBd63F610` | NFT | https://agentforge-b9n.pages.dev | @RelicMiners | Verified |
 | Wise Owl Society | `0x1cf9e60218493149ACe7DC953497c07175aa625e` | NFT | https://wiseowlsociety.xyz | @wiseowlsociety | Verified |
+| F0B90B | `0xa5d6ed5a0b50F97e94Cfc13618da24EEF8d28Cce` | NFT | https://f0b90b.pages.dev/ | @F0B90Bclub | Verified |
 
-27 projects now. The list keeps growing: new verified projects are added daily. Nothing enters the list without the contract, website, and X checks above.
+28 projects now. The list keeps growing: new verified projects are added daily. Nothing enters the list without the contract, website, and X checks above.
 
 ## Status
 
