@@ -128,7 +128,7 @@ Each project card shows the project's own logo when I have one bundled, and fall
 
 I deliberately did not add a favicon fallback (fetching `<website>/favicon.ico` or a favicon service at render time). Both live listings prove why: M3MO's favicon only exists as an inline data URI (`/favicon.ico` is a 404) and DogePunk's site has no favicon at all (`/favicon.ico` returns the app HTML). A runtime favicon lookup would add a slow third-party request to every card and still end at the letter tile most of the time.
 
-Current logos: M3MO Genesis (green robot mascot, from the m3m3agent.uk favicon) and DogePunk (pixel punk Doge hero art, from dogepunk.site).
+Current logos: M3MO Genesis (green robot mascot, from the m3m3agent.uk favicon), DogePunk (pixel punk Doge hero art, from dogepunk.site), and F0B90B (solid #F0B90B square, from the f0b90b.pages.dev favicon — the site has no other mark; its artwork is literally one solid colour).
 
 ## Audit scores and the Mint prompt
 
